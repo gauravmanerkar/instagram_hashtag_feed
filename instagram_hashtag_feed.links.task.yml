@@ -1,0 +1,11 @@
+instagram_hashtag_feed.admin_settings:
+  title: 'Settings'
+  route_name: instagram_hashtag_feed.admin_settings
+  base_route: instagram_hashtag_feed.admin_settings
+  weight: 0
+
+instagram_hashtag_feed.manage_posts:
+  title: 'Manage Posts'
+  route_name: instagram_hashtag_feed.manage_posts
+  base_route: instagram_hashtag_feed.admin_settings
+  weight: 1

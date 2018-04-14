@@ -1,0 +1,31 @@
+instagram_hashtag_feed.admin_settings:
+  path: '/admin/config/system/instagram-hashtag-feed'
+  defaults:
+    _form: 'Drupal\instagram_hashtag_feed\Form\SettingsForm'
+    _title: 'Instagram Hashtag Feed'
+  requirements:
+    _permission: 'administer site configuration'
+
+instagram_hashtag_feed.manage_posts:
+  path: '/admin/config/system/instagram-hashtag-feed/manage-posts'
+  defaults:
+    _controller: '\Drupal\instagram_hashtag_feed\Controller\InstagramHashtagFeedController::managePosts'
+    _title: 'Manage Posts'
+  requirements:
+    _permission: 'administer site configuration'
+
+instagram_hashtag_feed.delete:
+  path: '/admin/config/system/instagram-hashtag-feed/manage-posts/delete/{pid}'
+  defaults:
+    _form: '\Drupal\instagram_hashtag_feed\Form\DeleteForm'
+    _title: 'Delete Post'
+  requirements:
+    _permission: 'administer site configuration'
+
+instagram_hashtag_feed.change_status:
+  path: '/admin/config/system/instagram-hashtag-feed/manage-posts/status/{pid}/{status}'
+  defaults:
+    _controller: '\Drupal\instagram_hashtag_feed\Controller\InstagramHashtagFeedController::changePostStatus'
+    _title: 'Change Status'
+  requirements:
+    _permission: 'administer site configuration'

@@ -1,0 +1,8 @@
+name: Instagram Hashtag Feed
+description: 'This module pull data from Instagram based on hashtag.'
+package: Other
+type: module
+configure: instagram_hashtag_feed.admin_settings
+core: 8.x
+dependencies:
+  - drupal:block

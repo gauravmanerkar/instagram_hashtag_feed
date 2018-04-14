@@ -1,0 +1,7 @@
+/**
+ * Styling for admin pages.
+ */
+.instagram-hashtag-feed-manage-posts img {
+  max-width: 220px;
+  max-height: 220px;
+}

@@ -1,0 +1,50 @@
+<?php
+
+/**
+ * @file
+ * Install file for Instagram hashtag feed.
+ */
+
+/**
+ * Implements hook_schema().
+ */
+function instagram_hashtag_feed_schema() {
+  $schema['instagram_hashtag_feed'] = [
+    'fields' => [
+      'id' => [
+        'type' => 'serial',
+        'not null' => TRUE,
+      ],
+      'post_id' => [
+        'type' => 'varchar',
+        'length' => 500,
+        'not null' => TRUE,
+        'default' => '',
+      ],
+      'url' => [
+        'type' => 'varchar',
+        'length' => 500,
+        'not null' => TRUE,
+        'default' => '',
+      ],
+      'caption' => [
+        'type' => 'varchar',
+        'length' => 500,
+        'not null' => TRUE,
+        'default' => '',
+      ],
+      'published' => [
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+      ],
+      'created' => [
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+      ],
+    ],
+    'primary key' => ['id'],
+  ];
+  return $schema;
+}

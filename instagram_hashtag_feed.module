@@ -1,0 +1,94 @@
+<?php
+
+/**
+ * @file
+ * This module pull data from Instagram based on hashtag.
+ */
+
+use Drupal\Core\Routing\RouteMatchInterface;
+
+/**
+ * Implements hook_help().
+ */
+function instagram_hashtag_feed_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    case 'help.page.instagram_hashtag_feed':
+      $text = file_get_contents(dirname(__FILE__) . "/README.txt");
+      return '<pre>' . $text . '</pre>';
+  }
+}
+
+/**
+ * Fetch Instagram Posts.
+ */
+function instagram_hashtag_feed_fetch() {
+  $config = \Drupal::config('instagram_hashtag_feed.settings');
+  if (empty($config->get('instagram_hashtag')) || empty($config->get('instagram_access_token'))) {
+    return FALSE;
+  }
+  else {
+    $hashtag      = $config->get('instagram_hashtag');
+    $access_token = $config->get('instagram_access_token');
+    $url          = 'https://api.instagram.com/v1/tags/' . $hashtag . '/media/recent?access_token=' . $access_token;
+
+    $ch = curl_init();
+    curl_setopt_array($ch, [
+      CURLOPT_URL => $url,
+      CURLOPT_RETURNTRANSFER => TRUE,
+      CURLOPT_SSL_VERIFYPEER => FALSE,
+      CURLOPT_SSL_VERIFYHOST => 2,
+    ]);
+
+    $result      = curl_exec($ch);
+    $http_status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    curl_close($ch);
+
+    if ($http_status == 200) {
+      $response       = json_decode($result);
+      $imported_count = 0;
+      foreach ($response->data as $value) {
+        $db    = \Drupal::database();
+        $query = $db->select('instagram_hashtag_feed', 'ihf');
+        $query->fields('ihf');
+        $query->condition('ihf.    post_id', $value->id, '=');
+        $db_result = $query->execute()->fetchAll();
+
+        if (empty($db_result)) {
+          $insertData = [
+            'post_id'   => $value->id,
+            'url'       => !empty($value->images->standard_resolution->url) ? $value->images->standard_resolution->url : '',
+            'caption'   => !empty($value->caption->text) ? $value->caption->text : '',
+            'published' => $config->get('instagram_post_auto_publish'),
+            'created'   => $value->created_time,
+          ];
+
+          $query = db_insert('instagram_hashtag_feed')->fields($insertData);
+          $id    = $query->execute();
+          if ($id) {
+            $imported_count++;
+          }
+        }
+      }
+      return $imported_count;
+    }
+    else {
+      return FALSE;
+    }
+  }
+}
+
+/**
+ * Flush Instagram Posts.
+ */
+function instagram_hashtag_feed_flush() {
+  $query = \Drupal::database()->delete('instagram_hashtag_feed');
+  $query->execute();
+  return TRUE;
+}
+
+/**
+ * Implements hook_cron().
+ */
+function instagram_hashtag_feed_cron() {
+  instagram_hashtag_feed_fetch();
+}

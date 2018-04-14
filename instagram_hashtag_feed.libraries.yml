@@ -1,0 +1,13 @@
+admin.styling:
+  version: VERSION
+  css:
+    component:
+      css/admin.css: {}
+
+instagram_hashtag_feed.listing:
+  version: VERSION
+  css:
+    component:
+      css/style.css: {}
+  dependencies:
+    - core/jquery
